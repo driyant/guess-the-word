@@ -20,18 +20,49 @@ const paraMessage = document.querySelector(".message");
 const btnPlayAgain = document.querySelector(".play-again");
 // Variable with value magnolia by default
 const word = "magnolia";
+// Create another global variable with an empty array
+const guessedLetters = [];
 
 const paraUpdate = (word) => {
     const arr = [];
-    for(item of word) {
+    for (item of word) {
         arr.push("●");
     }
-   // console.log(arr);
-   paraProgress.innerText = arr.join(""); 
+    // console.log(arr);
+    paraProgress.innerText = arr.join("");
 }
 paraUpdate(word);
+
 btnGuess.addEventListener("click", (event) => {
     event.preventDefault();
-    const inputGuess = userInput.value;
+    const getValue = userInput.value;
+    if(validateInput(getValue)) {
+        makeGuess(getValue);
+    }
     userInput.value = "";
 });
+
+const validateInput = (getValue) => {
+    const accepterLetter = /[a-zA-Z]/;
+    const matchLetter = getValue.match(accepterLetter);
+    if (getValue.length <= 0) {
+        paraMessage.innerText = "Please enter the guess word!";
+    } else if (getValue.length > 1) {
+        paraMessage.innerText = "Character should be only 1!";
+    } else if (getValue != matchLetter) {
+        paraMessage.innerText = "Plase enter alphabetical only! Example: A-Z";
+    } else {
+        return userInput;
+    }
+}
+
+const makeGuess = (getValue) => {
+    // make input to uppercase
+    getValue.toUpperCase();
+    if (guessedLetters.includes(getValue)) {
+        paraMessage.innerText = "You've already guess that letter, try again!";
+    } else {
+        guessedLetters.push(getValue);
+        console.log(guessedLetters);
+    }
+}
