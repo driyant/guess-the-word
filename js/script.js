@@ -19,23 +19,42 @@ const paraMessage = document.querySelector(".message");
 // The hidden button that will appear prompting the player to play again.
 const btnPlayAgain = document.querySelector(".play-again");
 // Variable with value magnolia by default
-const word = "magnolia";
+let word = "magnolia";
 // Create another global variable with an empty array
 const guessedLetters = [];
+// Create a global variable called remainingGuesses and set it to a value of 8.
+let remainingGuesses = 8;
+
+const getWord = async (word) => {
+    const url = "https://gist.githubusercontent.com/skillcrush-curriculum/7061f1d4d3d5bfe47efbfbcfe42bf57e/raw/5ffc447694486e7dea686f34a6c085ae371b43fe/words.txt";
+    const res = await fetch(url);
+    const data = await res.text();
+    const dataArr = data.split("\n");
+    const randIndex = Math.floor(Math.random() * dataArr.length);
+    const randWord = dataArr[randIndex];
+    // reassign word global variable 
+    word = randWord.toUpperCase();
+    console.log(word);
+    paraUpdate(word);
+}
+
+getWord();
+
 
 const paraUpdate = word => {
     const arr = [];
     for (item of word) {
+        //console.log(`${word} + ${word.length}`);
         arr.push("●");
     }
     // console.log(arr);
     paraProgress.innerText = arr.join("");
 }
-paraUpdate(word);
+
 
 btnGuess.addEventListener("click", event => {
     event.preventDefault();
-    const getValue = userInput.value.toUpperCase();
+    const getValue = userInput.value;
     if(validateInput(getValue)) {
         makeGuess(getValue);
     }
@@ -66,6 +85,7 @@ const makeGuess = getValue => {
         console.log(guessedLetters);
         showGuessedLetters();
         updateWordInProgess(guessedLetters);
+        guessCountRemaining(getValue);
     }
 }
 
@@ -102,5 +122,24 @@ const checkWin = () => {
     if(paraProgress.innerText === word.toUpperCase()) {
         paraMessage.classList.add("win");
         paraMessage.innerHTML = `<p class="highlight">You guessed correct the word! Congrats!</p>.`;
+    }
+}
+
+const guessCountRemaining = getValue => {
+    const upperCase = word.toUpperCase();
+    if(!upperCase.includes(getValue)) {
+        paraMessage.innerText = `Sorry, the word you are guessing is not include ${getValue}`;
+        remainingGuesses = remainingGuesses -1;
+    } else {
+        paraMessage.innerText = `Good guess! the secret word contains letter ${getValue}`;
+    }
+
+    // remaining score
+    if(remainingGuesses === 0) {
+        paraRemaining.innerHTML = `Game over! The word <span><${word}/span>`
+    } else if (remainingGuesses === 1) {
+        paraRemaining.innerText = `Last chance! ${remainingGuesses} guess!`;
+    } else {
+        paraRemaining.innerText = `You have ${remainingGuesses} more left guess!`;
     }
 }
