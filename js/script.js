@@ -23,7 +23,7 @@ const word = "magnolia";
 // Create another global variable with an empty array
 const guessedLetters = [];
 
-const paraUpdate = (word) => {
+const paraUpdate = word => {
     const arr = [];
     for (item of word) {
         arr.push("●");
@@ -33,16 +33,16 @@ const paraUpdate = (word) => {
 }
 paraUpdate(word);
 
-btnGuess.addEventListener("click", (event) => {
+btnGuess.addEventListener("click", event => {
     event.preventDefault();
-    const getValue = userInput.value;
+    const getValue = userInput.value.toUpperCase();
     if(validateInput(getValue)) {
         makeGuess(getValue);
     }
     userInput.value = "";
 });
 
-const validateInput = (getValue) => {
+const validateInput = getValue => {
     const accepterLetter = /[a-zA-Z]/;
     const matchLetter = getValue.match(accepterLetter);
     if (getValue.length <= 0) {
@@ -56,13 +56,51 @@ const validateInput = (getValue) => {
     }
 }
 
-const makeGuess = (getValue) => {
+const makeGuess = getValue => {
     // make input to uppercase
-    getValue.toUpperCase();
+   // getValue.toUpperCase();
     if (guessedLetters.includes(getValue)) {
-        paraMessage.innerText = "You've already guess that letter, try again!";
+        paraMessage.innerText = "You've already guess that letter, try another letter!";
     } else {
         guessedLetters.push(getValue);
         console.log(guessedLetters);
+        showGuessedLetters();
+        updateWordInProgess(guessedLetters);
+    }
+}
+
+const showGuessedLetters = () => {
+    ul.innerHTML = "";
+    for(guessLetterItem of guessedLetters) {
+        const el = document.createElement("li");
+        el.innerText = guessLetterItem.toUpperCase();
+        ul.append(el);
+    }
+}
+
+const updateWordInProgess = guessedLetters => {
+    const wordUpper = word.toUpperCase();
+    const wordArray = wordUpper.split("");
+    //console.log(wordArray);
+    // check if the wordArray contains any  letters from guessedLetters array
+    const updateWord = [];
+    for(const alphabet of wordArray) {
+        if(guessedLetters.includes(alphabet)) {
+            updateWord.push(alphabet.toUpperCase());
+        } else {
+            updateWord.push("●");
+        }
+    }
+    // check updateWord
+    // console.log(updateWord);
+    paraProgress.innerText = updateWord.join("");
+    checkWin();
+}
+
+const checkWin = () => {
+    // begin verifying if their word matches in progress matches
+    if(paraProgress.innerText === word.toUpperCase()) {
+        paraMessage.classList.add("win");
+        paraMessage.innerHTML = `<p class="highlight">You guessed correct the word! Congrats!</p>.`;
     }
 }
