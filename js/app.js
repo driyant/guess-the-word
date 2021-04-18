@@ -35,7 +35,7 @@ const getWord = async () => {
     const randWord = dataArr[randIndex];
     // reassign word global variable and remove extra space
     word = randWord.trim();
-    console.log(word);
+    console.log(`Selected word is : ${word}`);
     // invoke paragraph symbol how many "●" symbol we need based on selected word.length;
     paraUpdate(word);
 }
@@ -85,9 +85,9 @@ const makeGuess = getValue => {
     } else {
         guessedLetters.push(wordUpperCase);
         console.log(guessedLetters);
-        showGuessedLetters();
+        guessCountRemaining(getValue);
+        showGuessedLetters();        
         updateWordInProgess(guessedLetters);
-        guessCountRemaining(wordUpperCase);
     }
 }
 
@@ -120,28 +120,47 @@ const updateWordInProgess = guessedLetters => {
 }
 
 const checkWin = () => {
-    // begin verifying if their word matches in progress matches
-    if(paraProgress.innerText === word.toUpperCase()) {
+    // begin verifying if the word matches in progress matches
+    if(paraProgress.innerText === wordUpper) {
         paraMessage.classList.add("win");
-        paraMessage.innerHTML = `<p class="highlight">You guessed correct the word! Congrats!</p>.`;
+        paraMessage.innerHTML = `<p class="highlight">You guessed correct the word! Congratulations!</p>.`;
+        startOver();
     }
 }
 
 const guessCountRemaining = getValue => {
     const upperCase = word.toUpperCase();
+     // remaining score
     if(!upperCase.includes(getValue)) {
-        paraMessage.innerText = `Sorry, the word you are guessing is not include ${getValue}`;
-        remainingGuesses = remainingGuesses -1;
+        paraMessage.innerText = `Sorry, the word you are guessing is not include ${getValue} adasdsad`;
+        remainingGuesses--;
     } else {
         paraMessage.innerText = `Good guess! the secret word contains letter ${getValue}`;
     }
-
-    // remaining score
     if(remainingGuesses === 0) {
-        paraRemaining.innerHTML = `Game over! The word <span><${word}/span>`
+        paraMessage.innerHTML = `Game over! The word is <span><${word}</span>`;
+        startOver();
     } else if (remainingGuesses === 1) {
         paraRemaining.innerText = `Last chance! ${remainingGuesses} guess!`;
     } else {
-        paraRemaining.innerText = `You have ${remainingGuesses} more left guess!`;
+        paraRemaining.innerText = `You have ${remainingGuesses} more left guessess!`;
     }
+    console.log(`Current score : ${remainingGuesses}`);
 }
+
+const startOver = () => {
+    btnGuess.classList.add("hide");
+    paraMessage.classList.add("hide");
+    paraRemaining.classList.add("hide");
+    ul.classList.add("hide");
+    userInput.disabled = true;
+    btnPlayAgain.classList.remove("hide");
+    btnPlayAgain.addEventListener("click", playAgain);
+}
+
+const playAgain = () => {
+    const index = 'index.html';
+     // reload to page
+    location.reload(index);
+}
+
