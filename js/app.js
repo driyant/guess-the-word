@@ -25,16 +25,18 @@ const guessedLetters = [];
 // Create a global variable called remainingGuesses and set it to a value of 8.
 let remainingGuesses = 8;
 
-const getWord = async (word) => {
+const getWord = async () => {
     const url = "https://gist.githubusercontent.com/skillcrush-curriculum/7061f1d4d3d5bfe47efbfbcfe42bf57e/raw/5ffc447694486e7dea686f34a6c085ae371b43fe/words.txt";
     const res = await fetch(url);
     const data = await res.text();
+    // make data into array and split the word at newline
     const dataArr = data.split("\n");
     const randIndex = Math.floor(Math.random() * dataArr.length);
     const randWord = dataArr[randIndex];
-    // reassign word global variable 
-    word = randWord.toUpperCase();
+    // reassign word global variable and remove extra space
+    word = randWord.trim();
     console.log(word);
+    // invoke paragraph symbol how many "●" symbol we need based on selected word.length;
     paraUpdate(word);
 }
 
@@ -54,10 +56,11 @@ const paraUpdate = word => {
 
 btnGuess.addEventListener("click", event => {
     event.preventDefault();
-    const getValue = userInput.value;
+    const getValue = userInput.value.toUpperCase();
     if(validateInput(getValue)) {
         makeGuess(getValue);
     }
+    // reset input text into blank
     userInput.value = "";
 });
 
@@ -76,16 +79,15 @@ const validateInput = getValue => {
 }
 
 const makeGuess = getValue => {
-    // make input to uppercase
-   // getValue.toUpperCase();
-    if (guessedLetters.includes(getValue)) {
+    const wordUpperCase = getValue.toUpperCase();
+    if (guessedLetters.includes(wordUpperCase)) {
         paraMessage.innerText = "You've already guess that letter, try another letter!";
     } else {
-        guessedLetters.push(getValue);
+        guessedLetters.push(wordUpperCase);
         console.log(guessedLetters);
         showGuessedLetters();
         updateWordInProgess(guessedLetters);
-        guessCountRemaining(getValue);
+        guessCountRemaining(wordUpperCase);
     }
 }
 
