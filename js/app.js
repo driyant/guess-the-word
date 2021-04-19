@@ -84,10 +84,10 @@ const makeGuess = getValue => {
         paraMessage.innerText = "You've already guess that letter, try another letter!";
     } else {
         guessedLetters.push(wordUpperCase);
-        console.log(guessedLetters);
+        //console.log(guessedLetters);   
         guessCountRemaining(getValue);
-        showGuessedLetters();        
-        updateWordInProgess(guessedLetters);
+        showGuessedLetters();
+        updateWordInProgess(guessedLetters);        
     }
 }
 
@@ -116,10 +116,10 @@ const updateWordInProgess = guessedLetters => {
     // check updateWord
     // console.log(updateWord);
     paraProgress.innerText = updateWord.join("");
-    checkWin();
+    checkWin(wordUpper);
 }
 
-const checkWin = () => {
+const checkWin = wordUpper => {
     // begin verifying if the word matches in progress matches
     if(paraProgress.innerText === wordUpper) {
         paraMessage.classList.add("win");
@@ -130,15 +130,18 @@ const checkWin = () => {
 
 const guessCountRemaining = getValue => {
     const upperCase = word.toUpperCase();
+    
      // remaining score
     if(!upperCase.includes(getValue)) {
-        paraMessage.innerText = `Sorry, the word you are guessing is not include ${getValue} adasdsad`;
+        paraMessage.innerText = `Sorry, the word you are guessing is not include ${getValue}`;
         remainingGuesses--;
     } else {
         paraMessage.innerText = `Good guess! the secret word contains letter ${getValue}`;
     }
+    // condition is not met
     if(remainingGuesses === 0) {
-        paraMessage.innerHTML = `Game over! The word is <span><${word}</span>`;
+        // console.log(upperCase);
+        paraMessage.innerHTML = `Game over! The word is <span>${upperCase}</span>`;
         startOver();
     } else if (remainingGuesses === 1) {
         paraRemaining.innerText = `Last chance! ${remainingGuesses} guess!`;
@@ -150,7 +153,6 @@ const guessCountRemaining = getValue => {
 
 const startOver = () => {
     btnGuess.classList.add("hide");
-    paraMessage.classList.add("hide");
     paraRemaining.classList.add("hide");
     ul.classList.add("hide");
     userInput.disabled = true;
